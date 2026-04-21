@@ -1,0 +1,84 @@
+{
+  "sdn": {
+    "x": 500,
+    "y": 70
+  },
+  "routers": [
+    { "name": "A", "x": 150, "y": 140, "connected_to_sdn": true },
+    { "name": "B", "x": 290, "y": 120, "connected_to_sdn": true },
+    { "name": "C", "x": 430, "y": 140, "connected_to_sdn": true },
+    { "name": "D", "x": 570, "y": 120, "connected_to_sdn": true },
+    { "name": "E", "x": 710, "y": 140, "connected_to_sdn": true },
+    { "name": "F", "x": 850, "y": 120, "connected_to_sdn": true },
+
+    { "name": "G", "x": 120, "y": 250, "connected_to_sdn": true },
+    { "name": "H", "x": 260, "y": 280, "connected_to_sdn": true },
+    { "name": "I", "x": 400, "y": 250, "connected_to_sdn": true },
+    { "name": "J", "x": 540, "y": 280, "connected_to_sdn": true },
+    { "name": "K", "x": 680, "y": 250, "connected_to_sdn": true },
+    { "name": "L", "x": 820, "y": 280, "connected_to_sdn": true },
+
+    { "name": "M", "x": 150, "y": 390, "connected_to_sdn": true },
+    { "name": "N", "x": 290, "y": 360, "connected_to_sdn": true },
+    { "name": "O", "x": 430, "y": 390, "connected_to_sdn": true },
+    { "name": "P", "x": 570, "y": 360, "connected_to_sdn": true },
+    { "name": "Q", "x": 710, "y": 390, "connected_to_sdn": true },
+    { "name": "R", "x": 850, "y": 360, "connected_to_sdn": true },
+
+    { "name": "S", "x": 240, "y": 500, "connected_to_sdn": true },
+    { "name": "T", "x": 500, "y": 520, "connected_to_sdn": true },
+    { "name": "U", "x": 760, "y": 500, "connected_to_sdn": true }
+  ],
+  "links": [
+    { "n1": "A", "n2": "B", "weight": 2 },
+    { "n1": "B", "n2": "C", "weight": 5 },
+    { "n1": "C", "n2": "D", "weight": 1 },
+    { "n1": "D", "n2": "E", "weight": 7 },
+    { "n1": "E", "n2": "F", "weight": 3 },
+
+    { "n1": "G", "n2": "H", "weight": 4 },
+    { "n1": "H", "n2": "I", "weight": 2 },
+    { "n1": "I", "n2": "J", "weight": 8 },
+    { "n1": "J", "n2": "K", "weight": 3 },
+    { "n1": "K", "n2": "L", "weight": 11 },
+
+    { "n1": "M", "n2": "N", "weight": 6 },
+    { "n1": "N", "n2": "O", "weight": 2 },
+    { "n1": "O", "n2": "P", "weight": 10 },
+    { "n1": "P", "n2": "Q", "weight": 4 },
+    { "n1": "Q", "n2": "R", "weight": 1 },
+
+    { "n1": "S", "n2": "T", "weight": 9 },
+    { "n1": "T", "n2": "U", "weight": 2 },
+
+    { "n1": "A", "n2": "G", "weight": 12 },
+    { "n1": "B", "n2": "H", "weight": 3 },
+    { "n1": "C", "n2": "I", "weight": 9 },
+    { "n1": "D", "n2": "J", "weight": 4 },
+    { "n1": "E", "n2": "K", "weight": 6 },
+    { "n1": "F", "n2": "L", "weight": 2 },
+
+    { "n1": "G", "n2": "M", "weight": 5 },
+    { "n1": "H", "n2": "N", "weight": 14 },
+    { "n1": "I", "n2": "O", "weight": 3 },
+    { "n1": "J", "n2": "P", "weight": 16 },
+    { "n1": "K", "n2": "Q", "weight": 2 },
+    { "n1": "L", "n2": "R", "weight": 7 },
+
+    { "n1": "N", "n2": "S", "weight": 5 },
+    { "n1": "O", "n2": "S", "weight": 13 },
+    { "n1": "O", "n2": "T", "weight": 2 },
+    { "n1": "P", "n2": "T", "weight": 3 },
+    { "n1": "Q", "n2": "U", "weight": 4 },
+    { "n1": "R", "n2": "U", "weight": 6 },
+
+    { "n1": "B", "n2": "I", "weight": 1 },
+    { "n1": "C", "n2": "H", "weight": 7 },
+    { "n1": "E", "n2": "J", "weight": 15 },
+    { "n1": "H", "n2": "M", "weight": 8 },
+    { "n1": "K", "n2": "P", "weight": 5 },
+    { "n1": "L", "n2": "Q", "weight": 12 },
+    { "n1": "D", "n2": "I", "weight": 20 },
+    { "n1": "F", "n2": "K", "weight": 24 }
+  ]
+}
