@@ -31,19 +31,20 @@ class Sidebar:
         on_ghost_move: Callable[[tk.Event[Any]], None],
         on_ghost_drop: Callable[[tk.Event[Any]], None],
         on_toggle_connect: Callable[[], None],
+        on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
         on_toggle_auto: Callable[[], None],
         on_run_dijkstra: Callable[[], None],
         on_load_topology: Callable[[], None],
         on_save_topology: Callable[[], None],
         on_start_packet: Callable[[], None],
-        on_reset_names: Callable[[], None],
         on_clear_all: Callable[[], None],
     ) -> None:
         self.sb_canvas: tk.Canvas
         self.sb_window: int
         self.sb: tk.Frame
         self.btn_connect: tk.Label
+        self.btn_del_link: tk.Label
         self.btn_sdn: tk.Label
         self.btn_auto: tk.Label
         self.src_var = tk.StringVar(value="A")
@@ -55,13 +56,13 @@ class Sidebar:
             on_ghost_move=on_ghost_move,
             on_ghost_drop=on_ghost_drop,
             on_toggle_connect=on_toggle_connect,
+            on_toggle_delete_link=on_toggle_delete_link,
             on_toggle_sdn=on_toggle_sdn,
             on_toggle_auto=on_toggle_auto,
             on_run_dijkstra=on_run_dijkstra,
             on_load_topology=on_load_topology,
             on_save_topology=on_save_topology,
             on_start_packet=on_start_packet,
-            on_reset_names=on_reset_names,
             on_clear_all=on_clear_all,
         )
 
@@ -73,13 +74,13 @@ class Sidebar:
         on_ghost_move: Callable[[tk.Event[Any]], None],
         on_ghost_drop: Callable[[tk.Event[Any]], None],
         on_toggle_connect: Callable[[], None],
+        on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
         on_toggle_auto: Callable[[], None],
         on_run_dijkstra: Callable[[], None],
         on_load_topology: Callable[[], None],
         on_save_topology: Callable[[], None],
         on_start_packet: Callable[[], None],
-        on_reset_names: Callable[[], None],
         on_clear_all: Callable[[], None],
     ) -> None:
         sb_outer = tk.Frame(parent, bg=SIDEBAR_BG, width=235)
@@ -108,13 +109,13 @@ class Sidebar:
             on_ghost_move=on_ghost_move,
             on_ghost_drop=on_ghost_drop,
             on_toggle_connect=on_toggle_connect,
+            on_toggle_delete_link=on_toggle_delete_link,
             on_toggle_sdn=on_toggle_sdn,
             on_toggle_auto=on_toggle_auto,
             on_run_dijkstra=on_run_dijkstra,
             on_load_topology=on_load_topology,
             on_save_topology=on_save_topology,
             on_start_packet=on_start_packet,
-            on_reset_names=on_reset_names,
             on_clear_all=on_clear_all,
         )
 
@@ -125,13 +126,13 @@ class Sidebar:
         on_ghost_move: Callable[[tk.Event[Any]], None],
         on_ghost_drop: Callable[[tk.Event[Any]], None],
         on_toggle_connect: Callable[[], None],
+        on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
         on_toggle_auto: Callable[[], None],
         on_run_dijkstra: Callable[[], None],
         on_load_topology: Callable[[], None],
         on_save_topology: Callable[[], None],
         on_start_packet: Callable[[], None],
-        on_reset_names: Callable[[], None],
         on_clear_all: Callable[[], None],
     ) -> None:
         def section(txt: str) -> None:
@@ -162,7 +163,8 @@ class Sidebar:
         tk.Frame(self.sb, bg=DIVIDER, height=1).pack(fill="x", padx=14, pady=12)
         section("TOOLS")
 
-        self.btn_connect = self._tool_btn("⟷  Connect Routers", on_toggle_connect)
+        self.btn_connect = self._tool_btn("⟷  Create Link", on_toggle_connect)
+        self.btn_del_link = self._tool_btn("✖  Delete Link", on_toggle_delete_link)
         self.btn_sdn = self._tool_btn("⬡  SDN Link Mode", on_toggle_sdn)
         self.btn_auto = self._tool_btn("☐  Auto Dijkstra: OFF", on_toggle_auto)
         self._tool_btn("▶  Run Dijkstra", on_run_dijkstra)
@@ -203,7 +205,6 @@ class Sidebar:
         ).pack(side="left", fill="x", expand=True)
 
         self._tool_btn("✉  Start Packet", on_start_packet)
-        self._tool_btn("↺  Reset Counter", on_reset_names)
         self._tool_btn("🗑  Clear Canvas", on_clear_all)
 
         tk.Frame(self.sb, bg=DIVIDER, height=1).pack(fill="x", padx=14, pady=12)

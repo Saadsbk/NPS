@@ -2,7 +2,7 @@
 
 import tkinter as tk
 
-from .theme import ACCENT, HEADER_BG, MUTED_TEXT
+from .theme import ACCENT, HEADER_BG, TEXT_COLOR, SELECT_CLR
 
 
 class HeaderBar:
@@ -11,6 +11,7 @@ class HeaderBar:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.status_lbl: tk.Label
+        self._blink_id: str | None = None
         self._build(root)
 
     def _build(self, root: tk.Tk) -> None:
@@ -28,10 +29,26 @@ class HeaderBar:
             hdr,
             text="Drag a Router onto the canvas to begin",
             bg=HEADER_BG,
-            fg=MUTED_TEXT,
-            font=("Consolas", 9),
+            fg=TEXT_COLOR,
+            font=("Consolas", 10, "bold"),
         )
         self.status_lbl.pack(side="right", padx=16)
 
     def set_status(self, msg: str) -> None:
         self.status_lbl.configure(text=msg)
+        self._start_blink()
+
+    def _start_blink(self) -> None:
+        if self._blink_id is not None:
+            self.root.after_cancel(self._blink_id)
+        
+        def blink_step(step: int) -> None:
+            if step > 5:
+                self.status_lbl.configure(fg=TEXT_COLOR)
+                self._blink_id = None
+                return
+            color = SELECT_CLR if step % 2 == 0 else TEXT_COLOR
+            self.status_lbl.configure(fg=color)
+            self._blink_id = self.root.after(150, lambda: blink_step(step + 1))
+            
+        blink_step(0)

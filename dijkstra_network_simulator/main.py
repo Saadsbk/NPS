@@ -60,13 +60,13 @@ class App:
             on_ghost_move=self._ghost_move,
             on_ghost_drop=self._ghost_drop,
             on_toggle_connect=self._toggle_connect_mode,
+            on_toggle_delete_link=self._toggle_delete_link,
             on_toggle_sdn=self._toggle_sdn_mode,
             on_toggle_auto=self._toggle_auto_dijkstra,
             on_run_dijkstra=self._run_dijkstra,
             on_load_topology=self._load_topology,
             on_save_topology=self._save_topology,
             on_start_packet=self._start_packet_sim,
-            on_reset_names=self._reset_names,
             on_clear_all=self._clear_all,
         )
 
@@ -87,6 +87,7 @@ class App:
             on_disconnect_sdn=self._disconnect_sdn,
             on_show_flow=self._show_flow,
             on_del_router=self._del_router,
+            on_del_link=self._del_link,
             on_del_sdn=self._del_sdn,
             on_run_dijkstra=self._run_dijkstra,
             on_close_weight_editor=lambda commit: self._close_weight_editor(commit),
@@ -151,6 +152,7 @@ class App:
     def _open_weight_editor(self, lnk: LinkEdge) -> None:
         self._close_weight_editor(commit=False)
         self.editing_link = lnk
+        lnk.highlight(True)
         ex, ey = lnk.label_center()
         entry = tk.Entry(
             self.canvas,
@@ -170,6 +172,8 @@ class App:
 
     def _close_weight_editor(self, commit: bool) -> None:
         if self.weight_editor is None:
+            if self.editing_link is not None:
+                self.editing_link.highlight(False)
             self.editing_link = None
             self.weight_editor_window = None
             return
@@ -192,6 +196,9 @@ class App:
             )
             self._silent_dijkstra()
 
+        if self.editing_link is not None:
+            self.editing_link.highlight(False)
+
         if self.weight_editor_window is not None:
             self.canvas.delete(self.weight_editor_window)
         self.weight_editor.destroy()
@@ -202,7 +209,6 @@ class App:
     # ── Node placement ──
 
     def _place_router(self, x: float, y: float) -> None:
-        self.canvas_handler.clear_hints()
         r = RouterNode(self.canvas, x, y)
         self.routers.append(r)
         self.status(f"Router {r.name} added  —  right-click to connect to SDN")
@@ -212,7 +218,6 @@ class App:
         if self.sdn_node:
             messagebox.showinfo("SDN Controller", "Only one SDN Controller is allowed on the canvas.")
             return
-        self.canvas_handler.clear_hints()
         self.sdn_node = SDNNode(self.canvas, x, y)
         self.status("SDN Controller placed  —  use 'SDN Link' mode to connect routers")
 
@@ -294,7 +299,29 @@ class App:
             self.selected_node = None
             self.sidebar.btn_connect.configure(fg=SELECT_CLR)
             self.sidebar.btn_sdn.configure(fg=TEXT_COLOR)
+            self.sidebar.btn_del_link.configure(fg=TEXT_COLOR)
             self.status("Connect mode  —  click Router A, then Router B")
+
+    def _toggle_delete_link(self) -> None:
+        if self.mode == "deleting_link":
+            self._deselect()
+            self.sidebar.btn_del_link.configure(fg=TEXT_COLOR)
+            self.status("")
+        else:
+            self.mode = "deleting_link"
+            self.selected_node = None
+            self.sidebar.btn_connect.configure(fg=TEXT_COLOR)
+            self.sidebar.btn_sdn.configure(fg=TEXT_COLOR)
+            self.sidebar.btn_del_link.configure(fg=SELECT_CLR)
+            self.status("Delete link mode  —  click a link to delete it")
+
+    def _del_link(self, lnk: LinkEdge) -> None:
+        if self.editing_link is lnk:
+            self._close_weight_editor(commit=False)
+        lnk.delete()
+        self.links.remove(lnk)
+        self.status("Link deleted")
+        self._silent_dijkstra()
 
     def _toggle_sdn_mode(self) -> None:
         if self.mode == "sdn_link":
@@ -310,6 +337,7 @@ class App:
             self.mode = "sdn_link"
             self.sidebar.btn_sdn.configure(fg=SELECT_CLR)
             self.sidebar.btn_connect.configure(fg=TEXT_COLOR)
+            self.sidebar.btn_del_link.configure(fg=TEXT_COLOR)
             self.status("SDN Link mode  —  click a router to connect it to SDN Ctrl")
 
     def _toggle_auto_dijkstra(self) -> None:
@@ -422,6 +450,9 @@ class App:
         if self.weight_editor is not None:
             self._close_weight_editor(commit=True)
 
+        for lnk in self.links:
+            lnk.highlight(False)
+
         src = self.sidebar.src_var.get().strip().upper()
         dst = self.sidebar.dst_var.get().strip().upper()
 
@@ -441,45 +472,45 @@ class App:
         self._compute_flows()
         flow_entry = self._flow_entry(src, dst)
 
-        if flow_entry is None:
-            drop_pt = PacketSimulationHandler.halfway_point(
-                (src_router.x, src_router.y), (dst_router.x, dst_router.y)
-            )
-            self.status(f"Packet dropped: no flow entry from {src} to {dst}")
-            self.simulator.animate(
-                [(src_router.x, src_router.y), drop_pt],
-                dropped=True,
-                on_complete=lambda: self.status(f"Packet dropped before reaching {dst}"),
-            )
-            return
-
-        path_text = str(flow_entry.get("path", "unreachable"))
-        if path_text == "unreachable":
-            drop_pt = PacketSimulationHandler.halfway_point(
-                (src_router.x, src_router.y), (dst_router.x, dst_router.y)
-            )
+        next_hop = str(flow_entry.get("next_hop", "—")) if flow_entry else "—"
+        if next_hop == "—":
             self.status(f"Packet dropped: destination {dst} unreachable")
             self.simulator.animate(
-                [(src_router.x, src_router.y), drop_pt],
+                [(src_router.x, src_router.y)],
                 dropped=True,
-                on_complete=lambda: self.status(f"Packet dropped before reaching {dst}"),
+                on_complete=lambda: self.status(f"Packet dropped at {src}"),
             )
             return
 
+        path_text = str(flow_entry.get("path", "")) if flow_entry else ""
         path_nodes = [name.strip() for name in path_text.split("-->")]
         points: list[tuple[float, float]] = []
         for name in path_nodes:
             rtr = self._router_by_name(name)
-            if rtr is None:
-                self.status("Packet dropped: path has missing router")
-                return
-            points.append((rtr.x, rtr.y))
+            if rtr is not None:
+                points.append((rtr.x, rtr.y))
+
+        path_links: list[LinkEdge] = []
+        for i in range(len(path_nodes) - 1):
+            n1_name = path_nodes[i]
+            n2_name = path_nodes[i + 1]
+            for lnk in self.links:
+                if {lnk.n1.name, lnk.n2.name} == {n1_name, n2_name}:
+                    path_links.append(lnk)
+                    break
+        for lnk in path_links:
+            lnk.highlight(True)
+
+        def on_complete() -> None:
+            for lnk in path_links:
+                lnk.highlight(False)
+            self.status(f"Packet delivered to {dst}")
 
         self.status(f"Packet started: {src} -> {dst}")
         self.simulator.animate(
             points,
             dropped=False,
-            on_complete=lambda: self.status(f"Packet delivered to {dst}"),
+            on_complete=on_complete,
         )
 
     # ── Misc ──
@@ -491,19 +522,7 @@ class App:
         self.mode = "idle"
         self.sidebar.btn_connect.configure(fg=TEXT_COLOR)
         self.sidebar.btn_sdn.configure(fg=TEXT_COLOR)
-
-    def _reset_names(self) -> None:
-        RouterNode.reset()
-        for r in self.routers:
-            RouterNode._counter += 1
-            new_name = chr(64 + RouterNode._counter)
-            r.name = new_name
-            if r._tid is not None:
-                self.canvas.itemconfig(r._tid, text=new_name)
-        self.flow_tables_short = {}
-        self.flow_tables_sec = {}
-        self._silent_dijkstra()
-        self.status("Router names reset")
+        self.sidebar.btn_del_link.configure(fg=TEXT_COLOR)
 
     def _clear_all(self, confirm: bool = True) -> None:
         if confirm and (not messagebox.askyesno("Clear Canvas", "Remove all nodes and links?")):

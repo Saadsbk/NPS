@@ -71,13 +71,19 @@ class PacketSimulationHandler:
         on_complete: Callable[[], None] | None = None,
     ) -> None:
         self.cancel()
-        if len(points) < 2:
+        if not points:
             if on_complete is not None:
                 on_complete()
             return
 
         self.running = True
         self._spawn_packet(points[0][0], points[0][1], dropped=dropped)
+
+        if len(points) == 1:
+            self._after_id = self.canvas.after(3000, self.cancel)
+            if on_complete is not None:
+                on_complete()
+            return
 
         segments: list[list[tuple[float, float]]] = []
         steps_per_segment = 18
@@ -100,6 +106,7 @@ class PacketSimulationHandler:
                 self.running = False
                 if on_complete is not None:
                     on_complete()
+                self._after_id = self.canvas.after(3000, self.cancel)
                 return
             px, py = flat_points[index]
             self._move_packet_to(px, py)

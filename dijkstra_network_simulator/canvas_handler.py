@@ -44,6 +44,7 @@ class CanvasHandler:
         on_disconnect_sdn: Callable[[RouterNode], None],
         on_show_flow: Callable[[RouterNode], None],
         on_del_router: Callable[[RouterNode], None],
+        on_del_link: Callable[[LinkEdge], None],
         on_del_sdn: Callable[[], None],
         on_run_dijkstra: Callable[[], None],
         on_close_weight_editor: Callable[[bool], None],
@@ -69,6 +70,7 @@ class CanvasHandler:
         self._on_disconnect_sdn = on_disconnect_sdn
         self._on_show_flow = on_show_flow
         self._on_del_router = on_del_router
+        self._on_del_link = on_del_link
         self._on_del_sdn = on_del_sdn
         self._on_run_dijkstra = on_run_dijkstra
         self._on_close_weight_editor = on_close_weight_editor
@@ -168,12 +170,20 @@ class CanvasHandler:
                     node.set_selected(True)
                     self._status(f"Router {node.name} selected — click another router")
                 elif selected is node:
-                    self._on_deselect()
-                    self._set_mode("connecting")
+                    selected.set_selected(False)
+                    self._set_selected_node(None)
+                    self._status("Connect mode  —  click Router A, then Router B")
                 else:
                     self._on_create_link(selected, node)
-                    self._on_deselect()
-                    self._set_mode("connecting")
+                    selected.set_selected(False)
+                    self._set_selected_node(None)
+                    self._status("Connect mode  —  click Router A, then Router B")
+
+        elif mode == "deleting_link":
+            if node is None:
+                clicked_link = self._link_at(x, y)
+                if clicked_link is not None:
+                    self._on_del_link(clicked_link)
 
         elif mode == "sdn_link":
             if isinstance(node, RouterNode):
@@ -311,29 +321,6 @@ class CanvasHandler:
             elif self.placing_type == "sdn":
                 self._on_place_sdn(x, y)
         self.placing_type = None
-
-    def draw_hints(self) -> None:
-        lines = [
-            "Drag  →  Router / SDN Ctrl from sidebar",
-            "Connect mode  →  click router A, then router B",
-            "SDN Link mode  →  click a router to connect to SDN Ctrl",
-            "Click any router  →  view its flow table",
-            "Right-click any node  →  context menu",
-        ]
-        y = 120
-        for ln in lines:
-            self.canvas.create_text(
-                20, y,
-                text=f"•  {ln}",
-                fill="#45475a",
-                font=("Consolas", 10),
-                anchor="w",
-                tags=("hint",),
-            )
-            y += 24
-
-    def clear_hints(self) -> None:
-        self.canvas.delete("hint")
 
     @staticmethod
     def _hex_pts(x: float, y: float, r: float) -> list[float]:

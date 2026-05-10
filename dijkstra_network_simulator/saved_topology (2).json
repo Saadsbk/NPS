@@ -1,0 +1,43 @@
+{
+  "sdn": {
+    "x": 276,
+    "y": 241
+  },
+  "routers": [
+    {
+      "name": "A",
+      "x": 234,
+      "y": 85,
+      "connected_to_sdn": true
+    },
+    {
+      "name": "B",
+      "x": 573,
+      "y": 92,
+      "connected_to_sdn": true
+    },
+    {
+      "name": "C",
+      "x": 431,
+      "y": 290,
+      "connected_to_sdn": true
+    }
+  ],
+  "links": [
+    {
+      "n1": "A",
+      "n2": "B",
+      "weight": 1
+    },
+    {
+      "n1": "C",
+      "n2": "A",
+      "weight": 1
+    },
+    {
+      "n1": "C",
+      "n2": "B",
+      "weight": 1
+    }
+  ]
+}
