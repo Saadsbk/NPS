@@ -98,7 +98,7 @@ class CanvasHandler:
         self.canvas.bind("<Button-3>", self._on_rclick)
         self.canvas.bind("<MouseWheel>", self._on_canvas_zoom)
 
-    def _on_canvas_zoom(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_canvas_zoom(self, event: tk.Event) -> None:
         factor = 1.1 if event.delta > 0 else (1 / 1.1)
         if self._get_weight_editor() is not None:
             self._on_close_weight_editor(True)
@@ -132,7 +132,7 @@ class CanvasHandler:
                     return r
         return None
 
-    def _on_click(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_click(self, event: tk.Event) -> None:
         x, y = event.x, event.y
         mode = self._get_mode()
 
@@ -179,7 +179,7 @@ class CanvasHandler:
             if isinstance(node, RouterNode):
                 self._on_connect_sdn(node)
 
-    def _on_drag(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_drag(self, event: tk.Event) -> None:
         if self._get_weight_editor() is not None:
             self._on_close_weight_editor(True)
         mode = self._get_mode()
@@ -202,7 +202,7 @@ class CanvasHandler:
                     sdn.y += dy
                 self.pan_anchor = (float(event.x), float(event.y))
 
-    def _on_release(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_release(self, event: tk.Event) -> None:
         _ = event
         mode = self._get_mode()
         if mode == "moving":
@@ -212,7 +212,7 @@ class CanvasHandler:
             self.pan_anchor = None
             self._set_mode("idle")
 
-    def _on_rclick(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_rclick(self, event: tk.Event) -> None:
         node = self._node_at(event.x, event.y)
         if isinstance(node, RouterNode):
             self._router_menu(event, node)
@@ -230,7 +230,7 @@ class CanvasHandler:
             font=("Consolas", 9),
         )
 
-    def _router_menu(self, event: tk.Event[tk.Widget], r: RouterNode) -> None:
+    def _router_menu(self, event: tk.Event, r: RouterNode) -> None:
         m = self._make_menu()
         m.add_command(label=f"  Router {r.name}", state="disabled", font=("Consolas", 9, "bold"))
         m.add_separator()
@@ -249,7 +249,7 @@ class CanvasHandler:
         m.add_command(label="  Delete Router", command=lambda: self._on_del_router(r))
         m.tk_popup(event.x_root, event.y_root)
 
-    def _sdn_menu(self, event: tk.Event[tk.Widget]) -> None:
+    def _sdn_menu(self, event: tk.Event) -> None:
         m = self._make_menu()
         m.add_command(label="  SDN Controller", state="disabled", font=("Consolas", 9, "bold"))
         m.add_separator()
@@ -260,7 +260,7 @@ class CanvasHandler:
 
     # ── Ghost (drag-to-place) ──
 
-    def ghost_start(self, event: tk.Event[Any], kind: str) -> None:
+    def ghost_start(self, event: tk.Event, kind: str) -> None:
         self.placing_type = kind
         cx = self.canvas.winfo_rootx()
         cy = self.canvas.winfo_rooty()
@@ -280,7 +280,7 @@ class CanvasHandler:
                 stipple="gray50", tags=("ghost",),
             )
 
-    def ghost_move(self, event: tk.Event[Any]) -> None:
+    def ghost_move(self, event: tk.Event) -> None:
         if self.ghost_id is None:
             return
         cx = self.canvas.winfo_rootx()
@@ -293,7 +293,7 @@ class CanvasHandler:
             dy = y - (bb[1] + bb[3]) / 2
             self.canvas.move(self.ghost_id, dx, dy)
 
-    def ghost_drop(self, event: tk.Event[Any]) -> None:
+    def ghost_drop(self, event: tk.Event) -> None:
         if self.ghost_id:
             self.canvas.delete(self.ghost_id)
             self.ghost_id = None

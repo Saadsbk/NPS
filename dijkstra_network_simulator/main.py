@@ -466,7 +466,7 @@ class App:
             )
             return
 
-        path_nodes = [name.strip() for name in path_text.split("→")]
+        path_nodes = [name.strip() for name in path_text.split("-->")]
         points: list[tuple[float, float]] = []
         for name in path_nodes:
             rtr = self._router_by_name(name)
