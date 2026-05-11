@@ -7,16 +7,21 @@
 )
 
 #align(center)[
-  #text(size: 24pt, weight: "bold")[FAST School of Computing \
-    National University of Computer & Emerging Sciences]
+  #v(2em)
+  #text(size: 24pt, weight: "bold")[NETWORK PATH SIMULATOR\ USING DIJKSTRA ALGORITHM]
   #v(8em)
-  #text(size: 22pt, weight: "bold")[Network Path Simulator using Dijkstra Algorithm]
-  #v(16em)
-  #text(size: 18pt)[
-    Submitted by: \
-    *Saad Bin Khalid* (23K-0797) \
-    *Maaz Nizami* (23K-2052)
+  #text(size: 14pt)[
+    *Submitted By* \
+    *Muhammad Saad Bin Khalid* \
+    *23K-0797* \
+    \
+    *Maaz Nizami* \
+    *23K-2052*
   ]
+  #v(1fr)
+  #text(size: 14pt, weight: "bold")[FAST School of Computing \
+    National University of Computer & Emerging Sciences]
+  #v(2em)
 ]
 
 
