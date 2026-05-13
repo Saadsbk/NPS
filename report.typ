@@ -311,6 +311,44 @@ The overall architecture of the Network Path Simulator consists of multiple inte
   caption: [System Architecture and Component Interactivity of the Network Path Simulator.],
 )
 
+#pagebreak()
+
+= Project Demo and Screenshots
+
+The following screenshots demonstrate the working functionality of the Network Path Simulator, showcasing its various modules and operations.
+
+#figure(
+  image("./screenshorts/ss1.png"),
+  caption: [The main user interface with the drawing canvas, left sidebar for function controls and left sidebar for best and second best path tables.]
+)
+#figure(
+  image("./screenshorts/routerPlacement.png"),
+  caption: [Drag and drop router nodes to create a network topology.]
+)
+#figure(
+  image("./screenshorts/createLink.png"),
+  caption: [Create links between router nodes to define the network structure by clicking on the create link button and then the source and destination nodes.]
+)
+
+#figure(
+  image("./screenshorts/SDNConfig.png"),
+  caption: [Drag and drop SDN controller and click the SDN link node button to connect the controller to a router node.]
+)
+
+#figure(
+  image("./screenshorts/runDij.png"),
+  caption: [Click the run Dijkstra button to calculate the shortest path between the source and destination nodes. The best path is represented by first table in the left panel and the second best path is represented by the second table.]
+)
+#figure(
+  image("./screenshorts/ss2.png"),
+  caption: [A preconfigured network topology with multiple nodes and links could also be loaded from a JSON file. ]
+)
+
+#figure(
+  image("./screenshorts/viz.png"),
+  caption: [Visualization of the shortest path routing with highlighted nodes and edges representing the best path between the source and destination.]
+)
+
 = References
 
 [1] T.H. Cormen, C.E. Leiserson, R.L. Rivest, and C. Stein, Introduction to Algorithms, MIT Press, Cambridge, 2009.\

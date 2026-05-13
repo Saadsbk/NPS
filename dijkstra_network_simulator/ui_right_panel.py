@@ -332,14 +332,14 @@ class RightPanel:
 
             path = e["path"]
 
-            def _hover_on(ev: tk.Event[tk.Widget], f: tk.Frame = row) -> None:
+            def _hover_on(ev: tk.Event, f: tk.Frame = row) -> None:
                 _ = ev
                 for w in f.winfo_children():
                     cast(Any, w).configure(bg=BTN_HOVER)
                 cast(Any, f).configure(bg=BTN_HOVER)
 
             def _hover_off(
-                ev: tk.Event[tk.Widget], f: tk.Frame = row, bg: str = row_bg
+                ev: tk.Event, f: tk.Frame = row, bg: str = row_bg
             ) -> None:
                 _ = ev
                 for w in f.winfo_children():
@@ -347,7 +347,7 @@ class RightPanel:
                 cast(Any, f).configure(bg=bg)
 
             def _click(
-                ev: tk.Event[tk.Widget],
+                ev: tk.Event,
                 p: str = path,
                 lbl: tk.Label = path_label,
                 pref: str = prefix,

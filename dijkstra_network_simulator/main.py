@@ -123,13 +123,13 @@ class App:
 
     # ── Ghost drag callbacks (forwarded to canvas handler) ──
 
-    def _ghost_start(self, event: tk.Event[Any], kind: str) -> None:
+    def _ghost_start(self, event: tk.Event, kind: str) -> None:
         self.canvas_handler.ghost_start(event, kind)
 
-    def _ghost_move(self, event: tk.Event[Any]) -> None:
+    def _ghost_move(self, event: tk.Event) -> None:
         self.canvas_handler.ghost_move(event)
 
-    def _ghost_drop(self, event: tk.Event[Any]) -> None:
+    def _ghost_drop(self, event: tk.Event) -> None:
         self.canvas_handler.ghost_drop(event)
 
     # ── Mode helpers ──

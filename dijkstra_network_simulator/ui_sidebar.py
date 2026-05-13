@@ -27,9 +27,9 @@ class Sidebar:
         self,
         parent: tk.Frame,
         *,
-        on_ghost_start: Callable[[tk.Event[Any], str], None],
-        on_ghost_move: Callable[[tk.Event[Any]], None],
-        on_ghost_drop: Callable[[tk.Event[Any]], None],
+        on_ghost_start: Callable[[tk.Event, str], None],
+        on_ghost_move: Callable[[tk.Event], None],
+        on_ghost_drop: Callable[[tk.Event], None],
         on_toggle_connect: Callable[[], None],
         on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
@@ -70,9 +70,9 @@ class Sidebar:
         self,
         parent: tk.Frame,
         *,
-        on_ghost_start: Callable[[tk.Event[Any], str], None],
-        on_ghost_move: Callable[[tk.Event[Any]], None],
-        on_ghost_drop: Callable[[tk.Event[Any]], None],
+        on_ghost_start: Callable[[tk.Event, str], None],
+        on_ghost_move: Callable[[tk.Event], None],
+        on_ghost_drop: Callable[[tk.Event], None],
         on_toggle_connect: Callable[[], None],
         on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
@@ -100,8 +100,9 @@ class Sidebar:
             lambda e: self.sb_canvas.itemconfigure(self.sb_window, width=e.width),
         )
         self.sb_canvas.configure(yscrollcommand=sb_vsb.set)
-        self.sb_canvas.pack(side="left", fill="both", expand=True)
+        
         sb_vsb.pack(side="right", fill="y")
+        self.sb_canvas.pack(side="left", fill="both", expand=True)
         self.sb_canvas.bind("<MouseWheel>", self._on_sidebar_mousewheel)
 
         self._build_contents(
@@ -122,9 +123,9 @@ class Sidebar:
     def _build_contents(
         self,
         *,
-        on_ghost_start: Callable[[tk.Event[Any], str], None],
-        on_ghost_move: Callable[[tk.Event[Any]], None],
-        on_ghost_drop: Callable[[tk.Event[Any]], None],
+        on_ghost_start: Callable[[tk.Event, str], None],
+        on_ghost_move: Callable[[tk.Event], None],
+        on_ghost_drop: Callable[[tk.Event], None],
         on_toggle_connect: Callable[[], None],
         on_toggle_delete_link: Callable[[], None],
         on_toggle_sdn: Callable[[], None],
@@ -298,5 +299,5 @@ class Sidebar:
         c.create_text(22, 20, text="S", fill="#1e1e2e", font=("Consolas", 9, "bold"))
         c.create_text(22, 30, text="D", fill="#1e1e2e", font=("Consolas", 7))
 
-    def _on_sidebar_mousewheel(self, event: tk.Event[tk.Widget]) -> None:
+    def _on_sidebar_mousewheel(self, event: tk.Event) -> None:
         self.sb_canvas.yview_scroll(-1 * (event.delta // 120), "units")
